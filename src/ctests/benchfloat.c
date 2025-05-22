@@ -4,7 +4,8 @@
 #include "papi.h"
 #include "papi_test.h"
 
-#include "oqs.h"
+#include "oqs/oqs.h"
+
 
 #include "testcode.h"
 
