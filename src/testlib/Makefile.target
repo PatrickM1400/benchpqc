@@ -8,5 +8,5 @@ INCLUDE = -I. -I${prefix}/include
 CC	= gcc
 F77	= 
 CC_R	= $(CC) -pthread
-CFLAGS	=  -DUSE_PTHREAD_MUTEXES  -DPAPI_NUM_COMP=3 -O1
+CFLAGS	=   -DPAPI_NUM_COMP=3 -O1
 ENABLE_FORTRAN = 

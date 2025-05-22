@@ -2,7 +2,7 @@
 /* config.h.in.  Generated from configure.in by autoheader.  */
 
 /* cpu type */
-#define CPU arm
+#define CPU x86
 
 /* POSIX 1b clock */
 #define HAVE_CLOCK_GETTIME 1
