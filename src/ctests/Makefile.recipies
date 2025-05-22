@@ -23,7 +23,8 @@ SERIAL  = serial_hl serial_hl_ll_comb\
 	get_event_component inherit \
 	hwinfo johnmay2 low-level memory \
 	realtime remove_events reset second tenth version virttime \
-	zero zero_flip zero_named benchfloat benchmod benchdsa2
+	zero zero_flip zero_named benchfloat benchmod benchdsa2 \
+	benchdsa3 benchdsa5
 FORKEXEC  = fork fork2 exec exec2 forkexec forkexec2 forkexec3 forkexec4 \
 	fork_overflow exec_overflow child_overflow system_child_overflow \
 	system_overflow burn zero_fork
@@ -225,7 +226,7 @@ destroy: destroy.c $(TESTLIB) $(TESTINS) $(PAPILIB)
 zero: zero.c $(TESTLIB) $(TESTINS) $(PAPILIB)
 	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) zero.c $(TESTLIB) $(TESTINS) $(PAPILIB) $(LDFLAGS) -o zero
 
-bench: benchfloat benchmod benchdsa2
+bench: benchfloat benchmod benchdsa2 benchdsa3 benchdsa5
 
 benchfloat: benchfloat.c $(TESTLIB) $(TESTINS) $(PAPILIB)
 	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) benchfloat.c $(PQCLIB) $(TESTLIB) $(TESTINS) $(PAPILIB) $(LDFLAGS) -lssl -lcrypto -o benchfloat
@@ -235,6 +236,12 @@ benchmod: benchmod.c $(TESTLIB) $(TESTINS) $(PAPILIB)
 
 benchdsa2: benchdsa2.c $(TESTLIB) $(TESTINS) $(PAPILIB)
 	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) benchdsa2.c $(PQCLIB) $(TESTLIB) $(TESTINS) $(PAPILIB) $(LDFLAGS) -lssl -lcrypto -o benchdsa2
+
+benchdsa3: benchdsa3.c $(TESTLIB) $(TESTINS) $(PAPILIB)
+	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) benchdsa3.c $(PQCLIB) $(TESTLIB) $(TESTINS) $(PAPILIB) $(LDFLAGS) -lssl -lcrypto -o benchdsa3
+
+benchdsa5: benchdsa5.c $(TESTLIB) $(TESTINS) $(PAPILIB)
+	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) benchdsa5.c $(PQCLIB) $(TESTLIB) $(TESTINS) $(PAPILIB) $(LDFLAGS) -lssl -lcrypto -o benchdsa5
 
 zero_named: zero_named.c $(TESTLIB) $(DOLOOPS) $(PAPILIB)
 	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) zero_named.c $(TESTLIB) $(DOLOOPS) $(PAPILIB) $(LDFLAGS) -o zero_named

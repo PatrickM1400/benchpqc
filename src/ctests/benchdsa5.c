@@ -61,7 +61,7 @@ int main(){
 
 	// fuzz_ctx_t ctx = init_fuzz_context(data, data_len);
 
-	const char *algorithm = OQS_SIG_alg_ml_dsa_65;
+	const char *algorithm = OQS_SIG_alg_ml_dsa_87;
 
 	sig = OQS_SIG_new(algorithm);
 	if (sig == NULL) {
