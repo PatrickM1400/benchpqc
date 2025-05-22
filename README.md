@@ -1,3 +1,4 @@
+sudo sh -c "echo 2 > /proc/sys/kernel/perf_event_paranoid"
 **[PAPI: The Performance Application Programming Interface](https://icl.utk.edu/exa-papi/)**
 
 **[Innovative Computing Laboratory (ICL)](http://www.icl.utk.edu/)**
@@ -120,3 +121,4 @@ you will need to do the following:
     ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+

@@ -46,14 +46,9 @@ int main(){
 	}
 	printf("Added PAPI_TOT_CYC\n");
 
-	long long count;
-
-	PAPI_reset(eventset);
-	retval=PAPI_start(eventset);
-	if (retval!=PAPI_OK) {
-		fprintf(stderr,"Error starting count: %s\n",
-				PAPI_strerror(retval));
-	}
+	long long KeyGenCount;
+	long long SignCount;
+	long long VerifyCount;
 	
 	OQS_SIG *sig = NULL;
 	uint8_t *public_key = NULL;
@@ -84,20 +79,72 @@ int main(){
 		return OQS_ERROR;
 	}
 
+	PAPI_reset(eventset);
+	retval=PAPI_start(eventset);
+	if (retval!=PAPI_OK) {
+		fprintf(stderr,"Error starting count: %s\n",
+				PAPI_strerror(retval));
+	}
+
 	rc = OQS_SIG_keypair(sig, public_key, secret_key);
+
+	retval=PAPI_stop(eventset,&KeyGenCount);
+	if (retval!=PAPI_OK) {
+		fprintf(stderr,"Error stopping:  %s\n",
+				PAPI_strerror(retval));
+	}
+	else {
+		printf("Measured %lld cycles for KeyGen\n",KeyGenCount);
+	}
+
 	if (rc != OQS_SUCCESS) {
 		fprintf(stderr, "ERROR: OQS_SIG_keypair failed!\n");
 		cleanup_heap(public_key, secret_key, signature, sig);
 		return OQS_ERROR;
 	}
+
+	PAPI_reset(eventset);
+	retval=PAPI_start(eventset);
+	if (retval!=PAPI_OK) {
+		fprintf(stderr,"Error starting count: %s\n",
+				PAPI_strerror(retval));
+	}
+
 	rc = OQS_SIG_sign(sig, signature, &signature_len, message, strlen(message), secret_key);
+
+	retval=PAPI_stop(eventset,&SignCount);
+	if (retval!=PAPI_OK) {
+		fprintf(stderr,"Error stopping:  %s\n",
+				PAPI_strerror(retval));
+	}
+	else {
+		printf("Measured %lld cycles for Sign\n",SignCount);
+	}
+
 	if (rc != OQS_SUCCESS) {
 		fprintf(stderr, "ERROR: OQS_SIG_sign failed!\n");
 		cleanup_heap(public_key, secret_key, signature, sig);
 		return OQS_ERROR;
 	}
-	rc = OQS_SIG_verify(sig, message, strlen(message), signature, signature_len,
-	                    public_key);
+
+	PAPI_reset(eventset);
+	retval=PAPI_start(eventset);
+	if (retval!=PAPI_OK) {
+		fprintf(stderr,"Error starting count: %s\n",
+				PAPI_strerror(retval));
+	}
+
+	rc = OQS_SIG_verify(sig, message, strlen(message), signature, signature_len, public_key);
+
+	retval=PAPI_stop(eventset,&VerifyCount);
+	if (retval!=PAPI_OK) {
+		fprintf(stderr,"Error stopping:  %s\n",
+				PAPI_strerror(retval));
+	}
+	else {
+		printf("Measured %lld cycles for Verify\n",VerifyCount);
+	}
+
 	if (rc != OQS_SUCCESS) {
 		fprintf(stderr, "ERROR: OQS_SIG_verify failed!\n");
 		cleanup_heap(public_key, secret_key, signature, sig);
@@ -109,12 +156,5 @@ int main(){
 
 
 
-	retval=PAPI_stop(eventset,&count);
-	if (retval!=PAPI_OK) {
-		fprintf(stderr,"Error stopping:  %s\n",
-				PAPI_strerror(retval));
-	}
-	else {
-		printf("Measured %lld cycles\n",count);
-	}
+
 }
