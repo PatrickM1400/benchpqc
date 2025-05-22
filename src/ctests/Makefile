@@ -2,14 +2,14 @@
 
 include Makefile.target
 
-INCLUDE = -I../testlib -I../validation_tests -I../oqs -I.. -I.
+INCLUDE = -I../testlib -I../validation_tests -I.. -I. -I../../../liboqs/build/include
 
 testlibdir= ../testlib
 TESTLIB= $(testlibdir)/libtestlib.a
 DOLOOPS= $(testlibdir)/do_loops.o
 CLOCKCORE= $(testlibdir)/clockcore.o
 
-PQCLIB = ../oqs/liboqs.a
+PQCLIB = ../../../liboqs/build/lib/liboqs.a
 
 validationlibdir= ../validation_tests
 TESTFLOPS= $(validationlibdir)/flops_testcode.o
