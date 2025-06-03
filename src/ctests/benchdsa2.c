@@ -11,8 +11,7 @@
 
 static void cleanup_heap(uint8_t *public_key, uint8_t *secret_key, uint8_t *signature, OQS_SIG *sig);
 
-void cleanup_heap(uint8_t *public_key, uint8_t *secret_key, uint8_t *signature,
-                  OQS_SIG *sig) {
+void cleanup_heap(uint8_t *public_key, uint8_t *secret_key, uint8_t *signature, OQS_SIG *sig) {
 	if (sig != NULL) {
 		OQS_MEM_secure_free(secret_key, sig->length_secret_key);
 	}
@@ -38,17 +37,31 @@ int main(){
 		fprintf(stderr,"Error creating eventset! %s\n",
 				PAPI_strerror(retval));
 	}
-	printf("Eventset created\n");
-	retval=PAPI_add_named_event(eventset,"PAPI_TOT_CYC");
-	if (retval!=PAPI_OK) {
-		fprintf(stderr,"Error adding PAPI_TOT_CYC: %s\n",
-				PAPI_strerror(retval));
-	}
-	printf("Added PAPI_TOT_CYC\n");
 
-	long long KeyGenCount;
-	long long SignCount;
-	long long VerifyCount;
+	// int numEvents = 5;
+	// char* eventNames[] = {"PAPI_TOT_CYC", "PAPI_MEM_WCY ", "PAPI_LST_INS", \
+	// 					"PAPI_L2_TCA", "PAPI_L3_TCA"};
+
+	int numEvents = 1;
+	char *eventNames[] = {"PAPI_TOT_CYC"};
+
+	printf("Eventset created\n");
+
+	for (int i = 0; i < numEvents; ++i) {
+		retval=PAPI_add_named_event(eventset, eventNames[i]);
+		if (retval!=PAPI_OK) {
+			fprintf(stderr,"Error adding %s: %s\n",
+					eventNames[i], PAPI_strerror(retval));
+		} else {
+			printf("Added %s\n", eventNames[i]);
+		}
+	}
+
+	printf("\n");
+
+	long long KeyGenCount[numEvents];
+	long long SignCount[numEvents];
+	long long VerifyCount[numEvents];
 	
 	OQS_SIG *sig = NULL;
 	uint8_t *public_key = NULL;
@@ -61,7 +74,7 @@ int main(){
 
 	// fuzz_ctx_t ctx = init_fuzz_context(data, data_len);
 
-	const char *algorithm = OQS_SIG_alg_ml_dsa_65;
+	const char *algorithm = OQS_SIG_alg_ml_dsa_44;
 
 	sig = OQS_SIG_new(algorithm);
 	if (sig == NULL) {
@@ -88,13 +101,17 @@ int main(){
 
 	rc = OQS_SIG_keypair(sig, public_key, secret_key);
 
-	retval=PAPI_stop(eventset,&KeyGenCount);
+	retval=PAPI_stop(eventset, KeyGenCount);
 	if (retval!=PAPI_OK) {
 		fprintf(stderr,"Error stopping:  %s\n",
 				PAPI_strerror(retval));
 	}
 	else {
-		printf("Measured %lld cycles for KeyGen\n",KeyGenCount);
+		for (int i = 0; i < numEvents; ++i) {
+			printf("Measured %lld for %s KeyGen\n",KeyGenCount[i], eventNames[i]);
+
+		}
+		printf("\n");
 	}
 
 	if (rc != OQS_SUCCESS) {
@@ -112,13 +129,16 @@ int main(){
 
 	rc = OQS_SIG_sign(sig, signature, &signature_len, message, strlen(message), secret_key);
 
-	retval=PAPI_stop(eventset,&SignCount);
+	retval=PAPI_stop(eventset, SignCount);
 	if (retval!=PAPI_OK) {
 		fprintf(stderr,"Error stopping:  %s\n",
 				PAPI_strerror(retval));
 	}
 	else {
-		printf("Measured %lld cycles for Sign\n",SignCount);
+		for (int i = 0; i < numEvents; ++i) {
+			printf("Measured %lld for %s Sign\n",SignCount[i], eventNames[i]);
+		}
+		printf("\n");
 	}
 
 	if (rc != OQS_SUCCESS) {
@@ -136,13 +156,16 @@ int main(){
 
 	rc = OQS_SIG_verify(sig, message, strlen(message), signature, signature_len, public_key);
 
-	retval=PAPI_stop(eventset,&VerifyCount);
+	retval=PAPI_stop(eventset, VerifyCount);
 	if (retval!=PAPI_OK) {
 		fprintf(stderr,"Error stopping:  %s\n",
 				PAPI_strerror(retval));
 	}
 	else {
-		printf("Measured %lld cycles for Verify\n",VerifyCount);
+		for (int i = 0; i < numEvents; ++i) {
+			printf("Measured %lld for %s Verify\n",VerifyCount[i], eventNames[i]);
+		}
+		printf("\n");
 	}
 
 	if (rc != OQS_SUCCESS) {

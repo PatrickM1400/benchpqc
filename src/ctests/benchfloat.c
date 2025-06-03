@@ -46,9 +46,10 @@ int main(){
 				PAPI_strerror(retval));
 	}
 	
-	for(int i = 0; i < 100000; i++)
-		printf("Floating Point Divison Result: %f\n", b/a);
-
+	for(int i = 0; i < 100000; i++) {
+		// printf("Floating Point Divison Result: %f\n", b/a);
+		volatile float c = b/a;
+	}
 	retval=PAPI_stop(eventset,&count);
 	if (retval!=PAPI_OK) {
 		fprintf(stderr,"Error stopping:  %s\n",

@@ -32,20 +32,26 @@ int main(){
 		fprintf(stderr,"Error creating eventset! %s\n",
 				PAPI_strerror(retval));
 	}
+
+	int numEvents = 2;
+	char* eventNames[] = {"PAPI_TOT_CYC", "PAPI_RES_STL"};
+
 	printf("Eventset created\n");
-	retval=PAPI_add_named_event(eventset,"PAPI_TOT_CYC");
-	if (retval!=PAPI_OK) {
-		fprintf(stderr,"Error adding PAPI_TOT_CYC: %s\n",
-				PAPI_strerror(retval));
+
+	for (int i = 0; i < numEvents; ++i) {
+		retval=PAPI_add_named_event(eventset, eventNames[i]);
+		if (retval!=PAPI_OK) {
+			fprintf(stderr,"Error adding %s: %s\n",
+					eventNames[i], PAPI_strerror(retval));
+		}
+		printf("Added %s\n", eventNames[i]);
 	}
-	printf("Added PAPI_TOT_CYC\n");
-	// volatile int a = 19123747;
 
 	uint8_t seedbuf[2*SEEDBYTES + CRHBYTES];
 	OQS_randombytes(seedbuf, SEEDBYTES);
 	seedbuf[SEEDBYTES+0] = K;
 	seedbuf[SEEDBYTES+1] = L;
-	long long count;
+	long long count[numEvents];
 
 	PAPI_reset(eventset);
 	retval=PAPI_start(eventset);
@@ -56,12 +62,15 @@ int main(){
 	
 	OQS_SHA3_shake128(seedbuf, 2*SEEDBYTES + CRHBYTES, seedbuf, SEEDBYTES+2);
 
-	retval=PAPI_stop(eventset,&count);
+	retval=PAPI_stop(eventset, count);
 	if (retval!=PAPI_OK) {
 		fprintf(stderr,"Error stopping:  %s\n",
 				PAPI_strerror(retval));
 	}
 	else {
-		printf("Measured %lld cycles\n",count);
+		for (int i = 0; i < numEvents; ++i) {
+			printf("Measured %lld for %s\n",count[i], eventNames[i]);
+
+		}
 	}
 }

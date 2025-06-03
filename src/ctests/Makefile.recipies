@@ -24,7 +24,8 @@ SERIAL  = serial_hl serial_hl_ll_comb\
 	hwinfo johnmay2 low-level memory \
 	realtime remove_events reset second tenth version virttime \
 	zero zero_flip zero_named benchfloat benchmod  benchmont \
-	benchdsa2 benchdsa3 benchdsa5 benchsqueeze256 benchsqueeze128
+	benchdsa2 benchdsa3 benchdsa5 benchsqueeze256 benchsqueeze128 \
+	benchgen2 benchgen3 benchgen5 benchgen
 FORKEXEC  = fork fork2 exec exec2 forkexec forkexec2 forkexec3 forkexec4 \
 	fork_overflow exec_overflow child_overflow system_child_overflow \
 	system_overflow burn zero_fork
@@ -226,7 +227,7 @@ destroy: destroy.c $(TESTLIB) $(TESTINS) $(PAPILIB)
 zero: zero.c $(TESTLIB) $(TESTINS) $(PAPILIB)
 	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) zero.c $(TESTLIB) $(TESTINS) $(PAPILIB) $(LDFLAGS) -o zero
 
-bench: benchfloat benchmod benchmont benchdsa2 benchdsa3 benchdsa5 benchsqueeze256 benchsqueeze128
+bench: benchfloat benchmod benchmont benchdsa2 benchdsa3 benchdsa5 benchsqueeze256 benchsqueeze128 benchgen2 benchgen3 benchgen5 benchgen
 
 benchfloat: benchfloat.c $(TESTLIB) $(TESTINS) $(PAPILIB)
 	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) benchfloat.c $(PQCLIB) $(TESTLIB) $(TESTINS) $(PAPILIB) $(LDFLAGS) -lssl -lcrypto -o benchfloat
@@ -251,6 +252,18 @@ benchsqueeze256: benchsqueeze256.c $(TESTLIB) $(TESTINS) $(PAPILIB)
 
 benchsqueeze128: benchsqueeze128.c $(TESTLIB) $(TESTINS) $(PAPILIB)
 	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) benchsqueeze128.c $(PQCLIB) $(TESTLIB) $(TESTINS) $(PAPILIB) $(LDFLAGS) -lssl -lcrypto -o benchsqueeze128
+
+benchgen: benchgen.c $(TESTLIB) $(TESTINS) $(PAPILIB)
+	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) benchgen.c $(PQCLIB) $(TESTLIB) $(TESTINS) $(PAPILIB) $(LDFLAGS) -lssl -lcrypto -o benchgen
+
+benchgen2: benchgen2.c $(TESTLIB) $(TESTINS) $(PAPILIB)
+	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) benchgen2.c $(PQCLIB) $(TESTLIB) $(TESTINS) $(PAPILIB) $(LDFLAGS) -lssl -lcrypto -o benchgen2
+
+benchgen3: benchgen3.c $(TESTLIB) $(TESTINS) $(PAPILIB)
+	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) benchgen3.c $(PQCLIB) $(TESTLIB) $(TESTINS) $(PAPILIB) $(LDFLAGS) -lssl -lcrypto -o benchgen3
+
+benchgen5: benchgen5.c $(TESTLIB) $(TESTINS) $(PAPILIB)
+	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) benchgen5.c $(PQCLIB) $(TESTLIB) $(TESTINS) $(PAPILIB) $(LDFLAGS) -lssl -lcrypto -o benchgen5
 
 zero_named: zero_named.c $(TESTLIB) $(DOLOOPS) $(PAPILIB)
 	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) zero_named.c $(TESTLIB) $(DOLOOPS) $(PAPILIB) $(LDFLAGS) -o zero_named
