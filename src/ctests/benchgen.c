@@ -49,12 +49,12 @@ int main(){
 	// 					"PAPI_SR_INS", "PAPI_TOT_INS"};
 
 	const uint8_t *message = "test";
-	// const char *algorithm = OQS_SIG_alg_ml_dsa_44;
-	// const char *algorithm = OQS_SIG_alg_ml_dsa_65;
+	//const char *algorithm = OQS_SIG_alg_ml_dsa_44;
+	//const char *algorithm = OQS_SIG_alg_ml_dsa_65;
 	const char *algorithm = OQS_SIG_alg_ml_dsa_87;
 
 	int numEvents = 1;
-	char *eventNames[] = {"PAPI_LST_INS"};
+	char *eventNames[] = {"PAPI_BR_MSP"};
 
 	// printf("Eventset created\n");
 

@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "papi.h": "c"
+        "papi.h": "c",
+        "benchgenc": "c"
     }
 }
