@@ -69,29 +69,29 @@ int main(){
 
 		FILE *pFile;
 
-		pFile = fopen("public_key.txt", "r");
-		if(pFile==NULL) {
-			perror("Error opening file.");
-		} else {
-			fread(public_key, sizeof(uint8_t), sig->length_public_key, pFile);
-		}	
-		fclose(pFile);
+		// pFile = fopen("public_key.txt", "r");
+		// if(pFile==NULL) {
+		// 	perror("Error opening file.");
+		// } else {
+		// 	fread(public_key, sizeof(uint8_t), sig->length_public_key, pFile);
+		// }	
+		// fclose(pFile);
 
-		pFile = fopen("secret_key.txt", "r");
-		if(pFile==NULL) {
-			perror("Error opening file.");
-		} else {
-			fread(secret_key, sizeof(uint8_t), sig->length_secret_key, pFile);
-		}	
-		fclose(pFile);
+		// pFile = fopen("secret_key.txt", "r");
+		// if(pFile==NULL) {
+		// 	perror("Error opening file.");
+		// } else {
+		// 	fread(secret_key, sizeof(uint8_t), sig->length_secret_key, pFile);
+		// }	
+		// fclose(pFile);
 
-		// rc = OQS_SIG_keypair(sig, public_key, secret_key);
+		rc = OQS_SIG_keypair(sig, public_key, secret_key);
 
-		// if (rc != OQS_SUCCESS) {
-		// 	fprintf(stderr, "ERROR: OQS_SIG_keypair failed!\n");
-		// 	cleanup_heap(public_key, secret_key, signature, sig);
-		// 	return OQS_ERROR;
-		// }
+		if (rc != OQS_SUCCESS) {
+			fprintf(stderr, "ERROR: OQS_SIG_keypair failed!\n");
+			cleanup_heap(public_key, secret_key, signature, sig);
+			return OQS_ERROR;
+		}
 
 		// pFile = fopen("public_key.txt", "w");
 		// if(pFile==NULL) {
@@ -109,13 +109,13 @@ int main(){
 		// }	
 		// fclose(pFile);
 
-		// rc = OQS_SIG_sign(sig, signature, &signature_len, message, strlen(message), secret_key);
+		rc = OQS_SIG_sign(sig, signature, &signature_len, message, strlen(message), secret_key);
 
-		// if (rc != OQS_SUCCESS) {
-		// 	fprintf(stderr, "ERROR: OQS_SIG_sign failed!\n");
-		// 	cleanup_heap(public_key, secret_key, signature, sig);
-		// 	return OQS_ERROR;
-		// }
+		if (rc != OQS_SUCCESS) {
+			fprintf(stderr, "ERROR: OQS_SIG_sign failed!\n");
+			cleanup_heap(public_key, secret_key, signature, sig);
+			return OQS_ERROR;
+		}
 
 		// pFile = fopen("signature.txt", "w");
 		// if(pFile==NULL) {
@@ -125,13 +125,13 @@ int main(){
 		// }	
 		// fclose(pFile);
 
-		pFile = fopen("signature.txt", "r");
-		if(pFile==NULL) {
-			perror("Error opening file.");
-		} else {
-			fread(signature, sizeof(uint8_t), sig->length_signature, pFile);
-		}	
-		fclose(pFile);
+		// pFile = fopen("signature.txt", "r");
+		// if(pFile==NULL) {
+		// 	perror("Error opening file.");
+		// } else {
+		// 	fread(signature, sizeof(uint8_t), sig->length_signature, pFile);
+		// }	
+		// fclose(pFile);
 
 
 		rc = OQS_SIG_verify(sig, message, strlen(message), signature, sig->length_signature, public_key);
