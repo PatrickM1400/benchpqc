@@ -49,12 +49,12 @@ int main(){
 	// 					"PAPI_SR_INS", "PAPI_TOT_INS"};
 
 	const uint8_t *message = "test";
-	const char *algorithm = OQS_SIG_alg_ml_dsa_44;
-	//const char *algorithm = OQS_SIG_alg_ml_dsa_65;
+	// const char *algorithm = OQS_SIG_alg_ml_dsa_44;
+	const char *algorithm = OQS_SIG_alg_ml_dsa_65;
 	// const char *algorithm = OQS_SIG_alg_ml_dsa_87;
 
 	int numEvents = 1;
-	char *eventNames[] = {"PAPI_BR_MSP"};
+	char *eventNames[] = {"PAPI_TOT_INS"};
 
 	// printf("Eventset created\n");
 
@@ -196,30 +196,30 @@ int main(){
 		VerifyTotal[j] = VerifyTotal[j] / NUMBER_TRIALS;
 	}
 
-	for (int i = 0; i < numEvents; ++i) {
-		printf("Measured %lld for %s KeyGen\n", KeyGenTotal[i], eventNames[i]);
-	}
-	printf("\n");
-	for (int i = 0; i < numEvents; ++i) {
-		printf("Measured %lld for %s Sign\n", SignTotal[i], eventNames[i]);
-	}
-	printf("\n");
-	for (int i = 0; i < numEvents; ++i) {
-		printf("Measured %lld for %s Verify\n", VerifyTotal[i], eventNames[i]);
-	}
-
-	// FILE *pFile;
-
-	// pFile = fopen("benchgen.txt", "a");
-	// if(pFile==NULL) {
-	// 	perror("Error opening file.");
+	// for (int i = 0; i < numEvents; ++i) {
+	// 	printf("Measured %lld for %s KeyGen\n", KeyGenTotal[i], eventNames[i]);
 	// }
-	// else {
-	// 	char *buff;
-	// 	if(0 > asprintf(&buff, "%lli,%lli,%lli\n", KeyGenTotal[0], SignTotal[0], VerifyTotal[0])) return -1;
-	// 	fputs(buff, pFile);
-	// 	free(buff);
-	// }	
-	// fclose(pFile);
+	// printf("\n");
+	// for (int i = 0; i < numEvents; ++i) {
+	// 	printf("Measured %lld for %s Sign\n", SignTotal[i], eventNames[i]);
+	// }
+	// printf("\n");
+	// for (int i = 0; i < numEvents; ++i) {
+	// 	printf("Measured %lld for %s Verify\n", VerifyTotal[i], eventNames[i]);
+	// }
+
+	FILE *pFile;
+
+	pFile = fopen("benchgen.txt", "a");
+	if(pFile==NULL) {
+		perror("Error opening file.");
+	}
+	else {
+		char *buff;
+		if(0 > asprintf(&buff, "%lli,%lli,%lli\n", KeyGenTotal[0], SignTotal[0], VerifyTotal[0])) return -1;
+		fputs(buff, pFile);
+		free(buff);
+	}	
+	fclose(pFile);
 
 }

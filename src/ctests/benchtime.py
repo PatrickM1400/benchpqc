@@ -7,12 +7,12 @@ VerifyCount = 0
 
 NumberTrials = 1000
 
-os.system("make clean && make benchgen")
+os.system("make clean && make benchtime")
 
-with open("benchgen.txt", "w+") as file:
+with open("benchtime.txt", "w+") as file:
 
     for _ in range(NumberTrials):
-        os.system("./benchgen")
+        os.system("./benchtime")
 
     for line in file:
         counts = line[0:-1].split(",")
@@ -20,6 +20,6 @@ with open("benchgen.txt", "w+") as file:
         SignCount += int(counts[1])
         VerifyCount += int(counts[2])
 
-print("Average cycles for ML-DSA security strength")
+print("Average time for ML-DSA security strength 2 in microsec")
 print((KeyGenCount/NumberTrials, SignCount/NumberTrials, VerifyCount/NumberTrials))
     
