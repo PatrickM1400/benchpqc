@@ -50,11 +50,11 @@ int main(){
 
 	const uint8_t *message = "test";
 	// const char *algorithm = OQS_SIG_alg_ml_dsa_44;
-	const char *algorithm = OQS_SIG_alg_ml_dsa_65;
-	//const char *algorithm = OQS_SIG_alg_ml_dsa_87;
+	// const char *algorithm = OQS_SIG_alg_ml_dsa_65;
+	const char *algorithm = OQS_SIG_alg_ml_dsa_87;
 
 	int numEvents = 1;
-	char *eventNames[] = {"PAPI_TOT_INS"};
+	char *eventNames[] = {"PAPI_TOT_CYC"};
 
 	// printf("Eventset created\n");
 
