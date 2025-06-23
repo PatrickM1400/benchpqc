@@ -25,7 +25,8 @@ SERIAL  = serial_hl serial_hl_ll_comb\
 	realtime remove_events reset second tenth version virttime \
 	zero zero_flip zero_named benchfloat benchmod  benchmont \
 	benchdsa2 benchdsa3 benchdsa5 benchsqueeze256 benchsqueeze128 \
-	benchgen2 benchgen3 benchgen5 benchgen benchmem benchtime
+	benchgen2 benchgen3 benchgen5 benchgen benchmem benchtime \
+	benchgem5
 FORKEXEC  = fork fork2 exec exec2 forkexec forkexec2 forkexec3 forkexec4 \
 	fork_overflow exec_overflow child_overflow system_child_overflow \
 	system_overflow burn zero_fork
@@ -227,7 +228,7 @@ destroy: destroy.c $(TESTLIB) $(TESTINS) $(PAPILIB)
 zero: zero.c $(TESTLIB) $(TESTINS) $(PAPILIB)
 	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) zero.c $(TESTLIB) $(TESTINS) $(PAPILIB) $(LDFLAGS) -o zero
 
-bench: benchfloat benchmod benchmont benchdsa2 benchdsa3 benchdsa5 benchsqueeze256 benchsqueeze128 benchgen2 benchgen3 benchgen5 benchgen benchmem benchtime
+bench: benchfloat benchmod benchmont benchdsa2 benchdsa3 benchdsa5 benchsqueeze256 benchsqueeze128 benchgen2 benchgen3 benchgen5 benchgen benchmem benchtime benchgem5
 
 benchfloat: benchfloat.c $(TESTLIB) $(TESTINS) $(PAPILIB)
 	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) benchfloat.c $(PQCLIB) $(TESTLIB) $(TESTINS) $(PAPILIB) $(LDFLAGS) -lssl -lcrypto -o benchfloat
@@ -270,6 +271,9 @@ benchmem: benchmem.c $(TESTLIB) $(TESTINS) $(PAPILIB)
 
 benchtime: benchtime.c $(TESTLIB) $(TESTINS) $(PAPILIB)
 	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) benchtime.c $(PQCLIB) $(TESTLIB) $(TESTINS) $(PAPILIB) $(LDFLAGS) -lssl -lcrypto -o benchtime
+
+benchgem5: benchgem5.c $(TESTLIB) $(TESTINS)
+	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) benchgem5.c $(PQCLIB) $(TESTLIB) $(TESTINS) $(LDFLAGS) -lssl -lcrypto -o benchgem5
 
 zero_named: zero_named.c $(TESTLIB) $(DOLOOPS) $(PAPILIB)
 	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) zero_named.c $(TESTLIB) $(DOLOOPS) $(PAPILIB) $(LDFLAGS) -o zero_named

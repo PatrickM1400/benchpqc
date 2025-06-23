@@ -35,9 +35,9 @@ int main(){
 	OQS_STATUS rc;
 
 	const uint8_t *message = "test";
-	// const char *algorithm = OQS_SIG_alg_ml_dsa_44;
-	// const char *algorithm = OQS_SIG_alg_ml_dsa_65;
-	const char *algorithm = OQS_SIG_alg_ml_dsa_87;
+	//const char *algorithm = OQS_SIG_alg_ml_dsa_44;
+	const char *algorithm = OQS_SIG_alg_ml_dsa_65;
+	//const char *algorithm = OQS_SIG_alg_ml_dsa_87;
 
 	for (int i = 1; i <= NUMBER_TRIALS; ++i) {
 
