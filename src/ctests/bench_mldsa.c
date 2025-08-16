@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "papi.h"
 #include "oqs/oqs.h"
 
 #define OQS_SIG_ml_dsa_44_length_public_key 1312
@@ -80,55 +79,15 @@ void cleanup_heap(uint8_t *public_key, uint8_t *secret_key, uint8_t *signature, 
 
 int main(int argc, char *argv[]){
 
-	/* ./benchgem5 <EVENT_NAME> <CRYPTO_OPERATION> <SECURITY_STRENGTH> */
-	if (argc != 4) {
+	/* ./bench_mldsa_nopapi <CRYPTO_OPERATION> <SECURITY_STRENGTH> */
+	if (argc != 3) {
 		printf("Invalid number of command line arguments\n");
-		printf("./benchgem5 <EVENT_NAME> <CRYPTO_OPERATION> <SECURITY_STRENGTH>");
+		printf("./benchgem5 <CRYPTO_OPERATION> <SECURITY_STRENGTH>");
 		return OQS_ERROR;
 	}
+	
 
-	char * eventName = argv[1];
-	int retval;
-
-	retval=PAPI_library_init(PAPI_VER_CURRENT);
-	if (retval!=PAPI_VER_CURRENT) {
-		fprintf(stderr,"Error initializing PAPI! %s\n",
-				PAPI_strerror(retval));
-		return 0;
-	}
-	// printf("PAPI Initialized!\n");
-	int eventset=PAPI_NULL;
-
-	retval=PAPI_create_eventset(&eventset);
-	if (retval!=PAPI_OK) {
-		fprintf(stderr,"Error creating eventset! %s\n",
-				PAPI_strerror(retval));
-	}
-
-	// {"PAPI_TOT_CYC", "PAPI_MEM_WCY ", "PAPI_LST_INS", "PAPI_L2_TCA" ,  "PAPI_L3_TCA"};
-
-	long long count;
-
-	retval=PAPI_add_named_event(eventset, eventName);
-	if (retval!=PAPI_OK) {
-		fprintf(stderr,"Error adding %s: %s\n",
-				eventName, PAPI_strerror(retval));
-	} 
-	// else {
-	// 	printf("Added %s\n", eventName);
-	// }
-
-
-	PAPI_reset(eventset);
-	retval=PAPI_start(eventset);
-	if (retval!=PAPI_OK) {
-		fprintf(stderr,"Error starting count: %s\n",
-				PAPI_strerror(retval));
-	}
-
-
-
-	char * cryptoArg = argv[2]; // 1 - KeyGen, 2 - Signature, 3 - Verify
+	char * cryptoArg = argv[1]; // 1 - KeyGen, 2 - Signature, 3 - Verify
 	int cryptoInt = atoi(cryptoArg);
 
 	switch(cryptoInt) {
@@ -141,7 +100,7 @@ int main(int argc, char *argv[]){
 			return OQS_ERROR;
 	}
 
-	char * strengthArg = argv[3]; // 1 - DSA44, 2 - DSA65, 3 - DSA87
+	char * strengthArg = argv[2]; // 1 - DSA44, 2 - DSA65, 3 - DSA87
 	int strengthInt = atoi(strengthArg);
 	const char *algorithm = NULL;
 
@@ -197,16 +156,6 @@ int main(int argc, char *argv[]){
 				cleanup_heap(public_key, secret_key, signature, sig);
 				return OQS_ERROR;
 			}
-
-			// for(int i = 0; i < sig->length_public_key; ++i) {
-			// 	printf("%02x", public_key[i]);
-			// }
-			// printf("\n");
-
-			// for(int i = 0; i < sig->length_secret_key; ++i) {
-			// 	printf("%02x", secret_key[i]);
-			// }
-			// printf("\n");
 
 			break;
 		case SIGNATURE:
@@ -269,28 +218,4 @@ int main(int argc, char *argv[]){
 	}
 
 	cleanup_heap(public_key, secret_key, signature, sig);
-
-	retval=PAPI_stop(eventset, &count);
-	if (retval!=PAPI_OK) {
-		fprintf(stderr,"Error stopping:  %s\n",
-				PAPI_strerror(retval));
-	}
-	// else {
-	// 	printf("Measured %lld for %s KeyGen\n", count, eventName);
-	// }
-
-	FILE *pFile;
-
-	pFile = fopen("benchgem5.txt", "a");
-	if(pFile==NULL) {
-		perror("Error opening file.");
-	}
-	else {
-		char *buff;
-		if(0 > asprintf(&buff, "%lli\n", count)) return -1;
-		fputs(buff, pFile);
-		free(buff);
-	}	
-	fclose(pFile);
-
 }

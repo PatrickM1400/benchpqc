@@ -15,9 +15,9 @@ LDFLAGS =
 CC	= gcc
 F77	= 
 CC_R	= $(CC) -pthread
-CFLAGS	=   -DPAPI_NUM_COMP=3
+CFLAGS	=  -DUSE_PTHREAD_MUTEXES  -DPAPI_NUM_COMP=3
 OMPCFLGS = -fopenmp
-FFLAGS	=     -Dlinux -ffixed-line-length-132
+FFLAGS	=  -DUSE_PTHREAD_MUTEXES    -Dlinux -ffixed-line-length-132
 TOPTFLAGS= -O1
 FTOPTFLAGS= -O1
 ENABLE_FORTRAN_TESTS=

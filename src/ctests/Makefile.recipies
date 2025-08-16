@@ -26,7 +26,7 @@ SERIAL  = serial_hl serial_hl_ll_comb\
 	zero zero_flip zero_named benchfloat benchmod  benchmont \
 	benchdsa2 benchdsa3 benchdsa5 benchsqueeze256 benchsqueeze128 \
 	benchgen2 benchgen3 benchgen5 benchgen benchmem benchtime \
-	benchgem5
+	benchgem5 bench_ed25519 bench_ed448 bench_rsa
 FORKEXEC  = fork fork2 exec exec2 forkexec forkexec2 forkexec3 forkexec4 \
 	fork_overflow exec_overflow child_overflow system_child_overflow \
 	system_overflow burn zero_fork
@@ -273,7 +273,19 @@ benchtime: benchtime.c $(TESTLIB) $(TESTINS) $(PAPILIB)
 	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) benchtime.c $(PQCLIB) $(TESTLIB) $(TESTINS) $(PAPILIB) $(LDFLAGS) -lssl -lcrypto -o benchtime
 
 benchgem5: benchgem5.c $(TESTLIB) $(TESTINS)
-	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) benchgem5.c $(PQCLIB) /home/patrick/Documents/openssl-install/lib64/libcrypto.a $(TESTLIB) $(TESTINS) $(LDFLAGS)  -o benchgem5 -static
+	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) benchgem5.c $(PQCLIB) /home/patrick/Documents/openssl-install/lib/libcrypto.a $(TESTLIB) $(TESTINS) $(PAPILIB) $(LDFLAGS)  -o benchgem5 -static
+
+bench_mldsa: bench_mldsa.c $(TESTLIB) $(TESTINS)
+	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) bench_mldsa.c $(PQCLIB) /home/patrick/Documents/openssl-install/lib/libcrypto.a $(TESTLIB) $(TESTINS) $(LDFLAGS)  -o bench_mldsa -static
+
+bench_ed25519: bench_ed25519.c $(TESTLIB) $(TESTINS)
+	$(CC) -g $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) bench_ed25519.c $(PQCLIB) /home/patrick/Documents/openssl-install/lib/libcrypto.a $(TESTLIB) $(TESTINS) $(LDFLAGS)  -o bench_ed25519 -static
+
+bench_ed448: bench_ed448.c $(TESTLIB) $(TESTINS)
+	$(CC) -g $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) bench_ed448.c $(PQCLIB) /home/patrick/Documents/openssl-install/lib/libcrypto.a $(TESTLIB) $(TESTINS) $(LDFLAGS)  -o bench_ed448 -static
+
+bench_rsa: bench_rsa.c $(TESTLIB) $(TESTINS)
+	$(CC) -g $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) bench_rsa.c $(PQCLIB) /home/patrick/Documents/openssl-install/lib/libcrypto.a $(TESTLIB) $(TESTINS) $(LDFLAGS)  -o bench_rsa -static
 
 zero_named: zero_named.c $(TESTLIB) $(DOLOOPS) $(PAPILIB)
 	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) zero_named.c $(TESTLIB) $(DOLOOPS) $(PAPILIB) $(LDFLAGS) -o zero_named
