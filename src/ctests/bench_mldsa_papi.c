@@ -82,10 +82,10 @@ void cleanup_heap(uint8_t *public_key, uint8_t *secret_key, uint8_t *signature, 
 
 int main(int argc, char *argv[]){
 
-	/* ./bench_mldsa_nopapi <CRYPTO_OPERATION> <SECURITY_STRENGTH> */
-	if (argc != 3) {
+	/* ./bench_mldsa_papi <CRYPTO_OPERATION> <SECURITY_STRENGTH> */
+	if (argc != 4) {
 		printf("Invalid number of command line arguments\n");
-		printf("./benchgem5 <CRYPTO_OPERATION> <SECURITY_STRENGTH>");
+		printf("./benchgem5 <PAPI_EVENT> <CRYPTO_OPERATION> <SECURITY_STRENGTH>");
 		return OQS_ERROR;
 	}
 
@@ -111,7 +111,7 @@ int main(int argc, char *argv[]){
 	// 					"PAPI_L2_TCA", "PAPI_L3_TCA"};
 
 	int numEvents = 1;
-	char eventName[] = "PAPI_TOT_CYC";
+	char *eventName = argv[1];
 	long long int count;
 
 	// printf("Eventset created\n");
@@ -131,7 +131,7 @@ int main(int argc, char *argv[]){
 	}
 	
 
-	char * cryptoArg = argv[1]; // 1 - KeyGen, 2 - Signature, 3 - Verify
+	char * cryptoArg = argv[2]; // 1 - KeyGen, 2 - Signature, 3 - Verify
 	int cryptoInt = atoi(cryptoArg);
 
 	switch(cryptoInt) {
@@ -144,7 +144,7 @@ int main(int argc, char *argv[]){
 			return OQS_ERROR;
 	}
 
-	char * strengthArg = argv[2]; // 1 - DSA44, 2 - DSA65, 3 - DSA87
+	char * strengthArg = argv[3]; // 1 - DSA44, 2 - DSA65, 3 - DSA87
 	int strengthInt = atoi(strengthArg);
 	const char *algorithm = NULL;
 
@@ -191,6 +191,8 @@ int main(int argc, char *argv[]){
 		return OQS_ERROR;
 	}
 
+
+
 	switch(cryptoInt) {
 		case KEYGEN:
 			rc = OQS_SIG_keypair(sig, public_key, secret_key);
@@ -216,7 +218,6 @@ int main(int argc, char *argv[]){
 					break;
 			}
 				
-
 			rc = OQS_SIG_sign(sig, signature, &signature_len, message, strlen(message), secret_key_static);
 
 			if (rc != OQS_SUCCESS) {
@@ -261,6 +262,8 @@ int main(int argc, char *argv[]){
 			break;
 	}
 
+
+
 	cleanup_heap(public_key, secret_key, signature, sig);
 
 	retval=PAPI_stop(eventset, &count);
@@ -272,7 +275,7 @@ int main(int argc, char *argv[]){
 
 	FILE *pFile;
 
-	pFile = fopen("bench_mldsa.csv", "a");
+	pFile = fopen("bench_mldsa.txt", "a");
 	if(pFile==NULL) {
 		perror("Error opening file.");
 	}

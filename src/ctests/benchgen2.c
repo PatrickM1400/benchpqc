@@ -109,7 +109,6 @@ int main(){
 			fprintf(stderr,"Error starting count: %s\n",
 					PAPI_strerror(retval));
 			exit(1);
-
 		}
 
 		rc = OQS_SIG_keypair(sig, public_key, secret_key);
