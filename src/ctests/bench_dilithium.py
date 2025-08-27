@@ -1,9 +1,10 @@
 import os
+import pandas as pd
 
 
 NumberTrials = 1000
 
-os.system("make clean && make bench_mldsa_papi")
+os.system("make clean && make bench_dilithium_papi")
 
 # with open("bench_mldsa.csv", "w+") as file: # Clears CSV
 #     pass
@@ -35,12 +36,18 @@ os.system("make clean && make bench_mldsa_papi")
 #             file.write("{},{},{},{}\n".format(op, strength, countCyc/NumberTrials, countIns/NumberTrials))
 
 
+operations = [1,2,3]
+strengths = [1,2,3]
 
-op = 2
-strength = 3
-
-with open("bench_mldsa_signature_{}_no_malloc.csv".format(strength), "w+") as file:
-
-    cmd = "./bench_mldsa_papi PAPI_TOT_CYC {} {}".format(op, strength)
-    for _ in range(NumberTrials):
+for op in operations:
+    for strength in strengths:
+        cmd = "./bench_dilithium_papi PAPI_TOT_CYC {} {}".format(op, strength)
         os.system(cmd)
+
+        # with open("bench_dilithium.csv", "r") as file:
+        dataframe = pd.read_csv("bench_dilithium.csv")
+        datalist = dataframe["cycleCount"].to_list()
+        datalist.sort()
+        print("Median Cycle Count for operation {} at strength {}: ".format(op, strength), datalist[int(len(datalist)/2)])
+
+        

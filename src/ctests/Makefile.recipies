@@ -26,7 +26,8 @@ SERIAL  = serial_hl serial_hl_ll_comb\
 	zero zero_flip zero_named benchfloat benchmod  benchmont \
 	benchdsa2 benchdsa3 benchdsa5 benchsqueeze256 benchsqueeze128 \
 	benchgen2 benchgen3 benchgen5 benchgen benchmem benchtime \
-	benchgem5 bench_ed25519 bench_ed448 bench_rsa
+	benchgem5 bench_ed25519 bench_ed448 bench_rsa \
+	bench_dilithium_papi bench_mldsa_papi
 FORKEXEC  = fork fork2 exec exec2 forkexec forkexec2 forkexec3 forkexec4 \
 	fork_overflow exec_overflow child_overflow system_child_overflow \
 	system_overflow burn zero_fork
@@ -280,6 +281,9 @@ bench_mldsa: bench_mldsa.c $(TESTLIB) $(TESTINS)
 
 bench_mldsa_papi: bench_mldsa_papi.c $(TESTLIB) $(TESTINS)
 	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) bench_mldsa_papi.c $(PQCLIB) /home/patrick/Documents/openssl-install/lib/libcrypto.a $(TESTLIB) $(TESTINS) $(PAPILIB)  $(LDFLAGS)  -o bench_mldsa_papi -static
+
+bench_dilithium_papi: bench_dilithium_papi.c $(TESTLIB) $(TESTINS)
+	$(CC) $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) bench_dilithium_papi.c $(PQCLIB) /home/patrick/Documents/openssl-install/lib/libcrypto.a $(TESTLIB) $(TESTINS) $(PAPILIB)  $(LDFLAGS)  -o bench_dilithium_papi -static
 
 bench_ed25519: bench_ed25519.c $(TESTLIB) $(TESTINS)
 	$(CC) -g $(INCLUDE) $(CFLAGS) $(TOPTFLAGS) bench_ed25519.c $(PQCLIB) /home/patrick/Documents/openssl-install/lib/libcrypto.a $(TESTLIB) $(TESTINS) $(PAPILIB) $(LDFLAGS)  -o bench_ed25519 -static

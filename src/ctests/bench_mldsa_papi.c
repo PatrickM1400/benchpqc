@@ -122,13 +122,7 @@ int main(int argc, char *argv[]){
 				eventName, PAPI_strerror(retval));
 	}
 	
-	PAPI_reset(eventset);
-	retval=PAPI_start(eventset);
-	if (retval!=PAPI_OK) {
-		fprintf(stderr,"Error starting count: %s\n",
-				PAPI_strerror(retval));
-		exit(1);
-	}
+
 	
 
 	char * cryptoArg = argv[2]; // 1 - KeyGen, 2 - Signature, 3 - Verify
@@ -191,100 +185,111 @@ int main(int argc, char *argv[]){
 		return OQS_ERROR;
 	}
 
-
-
-	switch(cryptoInt) {
-		case KEYGEN:
-			rc = OQS_SIG_keypair(sig, public_key, secret_key);
-
-			if (rc != OQS_SUCCESS) {
-				fprintf(stderr, "ERROR: OQS_SIG_keypair failed!\n");
-				cleanup_heap(public_key, secret_key, signature, sig);
-				return OQS_ERROR;
-			}
-
-			break;
-		case SIGNATURE:
-
-			switch(strengthInt) {
-				case DSA44:
-					secret_key_static = secret_key_dsa44;
-					break;
-				case DSA65:
-					secret_key_static = secret_key_dsa65;
-					break;
-				case DSA87:
-					secret_key_static = secret_key_dsa87;
-					break;
-			}
-				
-			rc = OQS_SIG_sign(sig, signature, &signature_len, message, strlen(message), secret_key_static);
-
-			if (rc != OQS_SUCCESS) {
-				fprintf(stderr, "ERROR: OQS_SIG_sign failed!\n");
-				cleanup_heap(public_key, secret_key, signature, sig);
-				return OQS_ERROR;
-			}
-
-			// for(int i = 0; i < sig->length_signature; ++i) {
-			// 	printf("%02x", signature[i]);
-			// }
-			// printf("\n");
-
-			break;
-		case VERIFY:
-
-			switch(strengthInt) {
-				case DSA44:
-					signature_static = signature_dsa44;
-					public_key_static = public_key_dsa44;
-					signature_len = OQS_SIG_ml_dsa_44_length_signature;
-					break;
-				case DSA65:
-					signature_static = signature_dsa65;
-					public_key_static = public_key_dsa65;
-					signature_len = OQS_SIG_ml_dsa_65_length_signature;
-					break;
-				case DSA87:
-					signature_static = signature_dsa87;
-					public_key_static = public_key_dsa87;
-					signature_len = OQS_SIG_ml_dsa_87_length_signature;
-					break;
-			}
-
-			rc = OQS_SIG_verify(sig, message, strlen(message), signature_static, signature_len, public_key_static);
-
-			if (rc != OQS_SUCCESS) {
-				fprintf(stderr, "ERROR: OQS_SIG_verify failed!\n");
-				cleanup_heap(public_key, secret_key, signature, sig);
-				return OQS_ERROR;
-			}
-			break;
-	}
-
-
-
-	cleanup_heap(public_key, secret_key, signature, sig);
-
-	retval=PAPI_stop(eventset, &count);
-	if (retval!=PAPI_OK) {
-		fprintf(stderr,"Error stopping:  %s\n",
-				PAPI_strerror(retval));
-		exit(1);
-	}
-
 	FILE *pFile;
 
 	pFile = fopen("bench_mldsa.txt", "a");
-	if(pFile==NULL) {
-		perror("Error opening file.");
+
+
+	for (int i = 0; i < 1000; ++i) {
+
+		PAPI_reset(eventset);
+		retval=PAPI_start(eventset);
+		if (retval!=PAPI_OK) {
+			fprintf(stderr,"Error starting count: %s\n",
+					PAPI_strerror(retval));
+			exit(1);
+		}
+
+		switch(cryptoInt) {
+			case KEYGEN:
+				rc = OQS_SIG_keypair(sig, public_key, secret_key);
+
+				if (rc != OQS_SUCCESS) {
+					fprintf(stderr, "ERROR: OQS_SIG_keypair failed!\n");
+					cleanup_heap(public_key, secret_key, signature, sig);
+					return OQS_ERROR;
+				}
+
+				break;
+			case SIGNATURE:
+
+				switch(strengthInt) {
+					case DSA44:
+						secret_key_static = secret_key_dsa44;
+						break;
+					case DSA65:
+						secret_key_static = secret_key_dsa65;
+						break;
+					case DSA87:
+						secret_key_static = secret_key_dsa87;
+						break;
+				}
+					
+				rc = OQS_SIG_sign(sig, signature, &signature_len, message, strlen(message), secret_key_static);
+
+				if (rc != OQS_SUCCESS) {
+					fprintf(stderr, "ERROR: OQS_SIG_sign failed!\n");
+					cleanup_heap(public_key, secret_key, signature, sig);
+					return OQS_ERROR;
+				}
+
+				// for(int i = 0; i < sig->length_signature; ++i) {
+				// 	printf("%02x", signature[i]);
+				// }
+				// printf("\n");
+
+				break;
+			case VERIFY:
+
+				switch(strengthInt) {
+					case DSA44:
+						signature_static = signature_dsa44;
+						public_key_static = public_key_dsa44;
+						signature_len = OQS_SIG_ml_dsa_44_length_signature;
+						break;
+					case DSA65:
+						signature_static = signature_dsa65;
+						public_key_static = public_key_dsa65;
+						signature_len = OQS_SIG_ml_dsa_65_length_signature;
+						break;
+					case DSA87:
+						signature_static = signature_dsa87;
+						public_key_static = public_key_dsa87;
+						signature_len = OQS_SIG_ml_dsa_87_length_signature;
+						break;
+				}
+
+				rc = OQS_SIG_verify(sig, message, strlen(message), signature_static, signature_len, public_key_static);
+
+				if (rc != OQS_SUCCESS) {
+					fprintf(stderr, "ERROR: OQS_SIG_verify failed!\n");
+					cleanup_heap(public_key, secret_key, signature, sig);
+					return OQS_ERROR;
+				}
+				break;
+		}
+	
+		
+
+		retval=PAPI_stop(eventset, &count);
+		if (retval!=PAPI_OK) {
+			fprintf(stderr,"Error stopping:  %s\n",
+					PAPI_strerror(retval));
+			exit(1);
+		}
+
+		if(pFile==NULL) {
+			perror("Error opening file.");
+		}
+		else {
+			char *buff;
+			if(0 > asprintf(&buff, "%lli\n", count)) return -1;
+			fputs(buff, pFile);
+			free(buff);
+		}
 	}
-	else {
-		char *buff;
-		if(0 > asprintf(&buff, "%lli\n", count)) return -1;
-		fputs(buff, pFile);
-		free(buff);
-	}	
+	
+	cleanup_heap(public_key, secret_key, signature, sig);
 	fclose(pFile);
 
 	printf("Cycle count of %lli\n", count);
