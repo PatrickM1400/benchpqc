@@ -48,6 +48,5 @@ for op in operations:
         dataframe = pd.read_csv("bench_dilithium.csv")
         datalist = dataframe["cycleCount"].to_list()
         datalist.sort()
-        print("Median Cycle Count for operation {} at strength {}: ".format(op, strength), datalist[int(len(datalist)/2)])
-
+        print("Median runtime in nanoseconds for operation {} at strength {}: ".format(op, strength), datalist[int(len(datalist)/2)])
         

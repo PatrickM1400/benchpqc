@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "papi.h"
 #include "papi_test.h"
@@ -91,36 +92,36 @@ int main(int argc, char *argv[]){
 
 	int retval;
 
-	retval=PAPI_library_init(PAPI_VER_CURRENT);
-	if (retval!=PAPI_VER_CURRENT) {
-		fprintf(stderr,"Error initializing PAPI! %s\n",
-				PAPI_strerror(retval));
-		return 0;
-	}
-	// printf("PAPI Initialized!\n");
-	int eventset=PAPI_NULL;
+	// retval=PAPI_library_init(PAPI_VER_CURRENT);
+	// if (retval!=PAPI_VER_CURRENT) {
+	// 	fprintf(stderr,"Error initializing PAPI! %s\n",
+	// 			PAPI_strerror(retval));
+	// 	return 0;
+	// }
+	// // printf("PAPI Initialized!\n");
+	// int eventset=PAPI_NULL;
 
-	retval=PAPI_create_eventset(&eventset);
-	if (retval!=PAPI_OK) {
-		fprintf(stderr,"Error creating eventset! %s\n",
-				PAPI_strerror(retval));
-	}
+	// retval=PAPI_create_eventset(&eventset);
+	// if (retval!=PAPI_OK) {
+	// 	fprintf(stderr,"Error creating eventset! %s\n",
+	// 			PAPI_strerror(retval));
+	// }
 
 	// int numEvents = 5;
 	// char* eventNames[] = {"PAPI_TOT_CYC", "PAPI_MEM_WCY ", "PAPI_LST_INS", \
 	// 					"PAPI_L2_TCA", "PAPI_L3_TCA"};
 
-	int numEvents = 1;
-	char *eventName = argv[1];
-	long long int count;
+	// int numEvents = 1;
+	// char *eventName = argv[1];
+	// long long int count;
 
-	// printf("Eventset created\n");
+	// // printf("Eventset created\n");
 
-	retval=PAPI_add_named_event(eventset, eventName);
-	if (retval!=PAPI_OK) {
-		fprintf(stderr,"Error adding %s: %s\n",
-				eventName, PAPI_strerror(retval));
-	}
+	// retval=PAPI_add_named_event(eventset, eventName);
+	// if (retval!=PAPI_OK) {
+	// 	fprintf(stderr,"Error adding %s: %s\n",
+	// 			eventName, PAPI_strerror(retval));
+	// }
 	
 
 	
@@ -194,13 +195,17 @@ int main(int argc, char *argv[]){
 
 	for (int i = 0; i < 1000; ++i) {
 
-		PAPI_reset(eventset);
-		retval=PAPI_start(eventset);
-		if (retval!=PAPI_OK) {
-			fprintf(stderr,"Error starting count: %s\n",
-					PAPI_strerror(retval));
-			exit(1);
-		}
+		// PAPI_reset(eventset);
+		// retval=PAPI_start(eventset);
+		// if (retval!=PAPI_OK) {
+		// 	fprintf(stderr,"Error starting count: %s\n",
+		// 			PAPI_strerror(retval));
+		// 	exit(1);
+		// }
+		clockid_t clock_id = 1; // CLOCK_MONOTONIC                 
+		struct timespec tp_start;
+		struct timespec tp_end;
+		clock_gettime(clock_id, &tp_start);
 
 		switch(cryptoInt) {
 			case KEYGEN:
@@ -280,21 +285,23 @@ int main(int argc, char *argv[]){
 				break;
 		}
 	
-		
+		clock_gettime(clock_id, &tp_end);
 
-		retval=PAPI_stop(eventset, &count);
-		if (retval!=PAPI_OK) {
-			fprintf(stderr,"Error stopping:  %s\n",
-					PAPI_strerror(retval));
-			exit(1);
-		}
+		long long int nanoseconds = (tp_end.tv_sec - tp_end.tv_sec) * 1000000000 + (tp_end.tv_nsec - tp_start.tv_nsec);
+
+		// retval=PAPI_stop(eventset, &count);
+		// if (retval!=PAPI_OK) {
+		// 	fprintf(stderr,"Error stopping:  %s\n",
+		// 			PAPI_strerror(retval));
+		// 	exit(1);
+		// }
 
 		if(pFile==NULL) {
 			perror("Error opening file.");
 		}
 		else {
 			char *buff;
-			if(0 > asprintf(&buff, "%lli\n", count)) return -1;
+			if(0 > asprintf(&buff, "%lli\n", nanoseconds)) return -1;
 			fputs(buff, pFile);
 			free(buff);
 		}
