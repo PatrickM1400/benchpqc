@@ -286,7 +286,6 @@ int main(int argc, char *argv[]){
 		}
 	
 		clock_gettime(clock_id, &tp_end);
-
 		long long int nanoseconds = (tp_end.tv_sec - tp_end.tv_sec) * 1000000000 + (tp_end.tv_nsec - tp_start.tv_nsec);
 
 		// retval=PAPI_stop(eventset, &count);
